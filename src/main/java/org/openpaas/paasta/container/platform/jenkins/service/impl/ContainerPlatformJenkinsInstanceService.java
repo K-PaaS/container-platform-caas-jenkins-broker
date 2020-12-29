@@ -59,6 +59,15 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
     @Value("${jenkins.namespace}")
     public String namespace;
 
+    @Value("${jenkins.username}")
+    public String jenkins_username;
+
+    @Value("${jenkins.password}")
+    public String jenkins_password;
+
+    @Value("${jenkins.docker_repository_url}")
+    public String docker_repository_url;
+
     @Value("${caas.k8s_api_server_ip}")
     public String k8s_api_server_ip;
 
@@ -76,19 +85,6 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
     @Autowired public ContainerPlatformJenkinsInstanceService(CommonService commonService, JpaJenkinsInstanceRepository jpaJenkinsInstanceRepository){
         this.commonService = commonService;
         this.jpaJenkinsInstanceRepository = jpaJenkinsInstanceRepository;
-
-        //try {
-        //    String create_namespace = commonService.namespace();
-        //    String auth_value =
-        //        commonService.secret_data_value(docker_repository_url, jenkins_username, jenkins_password);
-        //    String secret = commonService.secret(auth_value);
-        //    //send("/namespaces", HttpMethod.POST, create_namespace, Map.class);
-        //    //Map map = send("/namespaces/"+namespace+"/secrets", HttpMethod.POST, secret, Map.class);
-        //    //LOGGER.info("END CREATE NAMESPACE ::: "+ namespace +", SECRET" );
-        //    break;
-        //} catch (InterruptedException e1) {
-        //    e1.printStackTrace();
-        //}
     }
 
     @Override
@@ -101,6 +97,11 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
 
             this.sendPost(commonService.namespace(), "/api/v1/namespaces");
 
+            String auth_value =
+                commonService.secret_data_value(docker_repository_url, jenkins_username, jenkins_password);
+            String secret = commonService.secret(auth_value);
+            this.sendPost(secret, "/api/v1/namespaces/"+namespace+"/secrets");
+
             JpaServiceInstance jpaServiceInstance1  = new JpaServiceInstance(request);
 
             String deployment = commonService.deployment(request.getOrganizationGuid());
@@ -111,7 +112,7 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
 
             JpaJenkinsInstance jpaJenkinsInstance = new JpaJenkinsInstance(request.getOrganizationGuid(), request.getServiceInstanceId(), namespace);
             Thread.sleep(5000);
-          
+
             String result = this.sendGet("/api/v1/namespaces/" + namespace + "/services/jenkins-"+jpaJenkinsInstance.getOrganizationGuid());
 
             KubeServiceV1 v1Service = commonService.getGson().fromJson(result, KubeServiceV1.class);
