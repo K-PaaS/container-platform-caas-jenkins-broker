@@ -54,3 +54,16 @@ container_platform:
   k8s_api_server_port: <%= p('caas.k8s_api_server_port')%>
   k8s_auth_basic: <%= p('caas.k8s_auth_basic')%>
   dashboard_ip: http://<%= p('caas.k8s_api_server_ip')%>
+
+private:
+  docker:
+    registry:
+      auth:
+        id: admin
+        password: cloudfoundry
+      uri: <%= p('private.docker.registry.uri')%>
+      port: <%= p('private.docker.registry.port')%>
+      image: <%= p('private.docker.registry.image')%>
+      version: <%= p('private.docker.registry.version')%>
+      secret:
+        name: paasta

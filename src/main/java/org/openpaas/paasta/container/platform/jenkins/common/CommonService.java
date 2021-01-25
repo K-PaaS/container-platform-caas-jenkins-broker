@@ -48,6 +48,21 @@ public class CommonService {
     @Value("${jenkins.secret_file_path}")
     public String jenkins_secret_file_path;
 
+
+    @Value("${private.docker.registry.uri}")
+    public String private_docker_registry_uri;
+
+    @Value("${private.docker.registry.port}")
+    public String private_docker_registry_port;
+
+    @Value("${private.docker.registry.image}")
+    public String private_docker_registry_image;
+
+    @Value("${private.docker.registry.version}")
+    public String private_docker_registry_version;
+
+
+
     public Gson getGson() {
         return gson;
     }
@@ -58,6 +73,8 @@ public class CommonService {
     public String deployment(String org_guid) throws IOException {
         File deployment = new File(jenkins_deployment_file_path);
         AppsV1beta1Deployment v1beta1Deployment = mapper.readValue(deployment, AppsV1beta1Deployment.class);
+
+        v1beta1Deployment.getSpec().getTemplate().getSpec().getContainers().get(0).setImage(generatePrivateRegistryImage());
         v1beta1Deployment = deployment_name_change(v1beta1Deployment, org_guid);
         return Object_To_Json(v1beta1Deployment);
     }
@@ -141,5 +158,8 @@ public class CommonService {
     }
 
 
+    public String generatePrivateRegistryImage(){
+        return private_docker_registry_uri + ":" + private_docker_registry_port + "/" + private_docker_registry_image + ":" +  private_docker_registry_version;
+    }
 
 }
