@@ -41,6 +41,7 @@ Jenkins 서비스 브로커의 개발 환경은 다음과 같습니다.
 | Hibernate Validator            | 5.1.0   |
 | Json Path                      | 0.9.1   |
 | Jacoco                         | 0.7.9+  |
+| MariaDB Java Client            | 2.2.6   |
 
 ## 가능한 명령 목록 (로컬 환경)
 
