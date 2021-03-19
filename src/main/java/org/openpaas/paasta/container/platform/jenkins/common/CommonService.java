@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -70,8 +71,8 @@ public class CommonService {
     @Autowired
     public CommonService(Gson gson) {this.gson = gson;}
 
-    public String deployment(String org_guid) throws IOException {
-        File deployment = new File(jenkins_deployment_file_path);
+    public String deployment(String org_guid) throws IOException, NullPointerException {
+        File deployment = new File(FilenameUtils.getName(jenkins_deployment_file_path));
         AppsV1beta1Deployment v1beta1Deployment = mapper.readValue(deployment, AppsV1beta1Deployment.class);
 
         v1beta1Deployment.getSpec().getTemplate().getSpec().getContainers().get(0).setImage(generatePrivateRegistryImage());
@@ -80,14 +81,14 @@ public class CommonService {
     }
 
     public String service(String org_guid) throws IOException {
-        File service = new File(jenkins_service_file_path);
+        File service = new File(FilenameUtils.getName(jenkins_service_file_path));
         V1Service v1Service = mapper.readValue(service, V1Service.class);
         v1Service = service_name_change(v1Service, org_guid);
         return Object_To_Json(v1Service);
     }
 
     public String namespace() throws IOException {
-        File service = new File(jenkins_namespace_file_path);
+        File service = new File(FilenameUtils.getName(jenkins_namespace_file_path));
         V1Namespace v1Namespace =  mapper.readValue(service, V1Namespace.class);
         return Object_To_Json(v1Namespace);
     }
@@ -96,7 +97,7 @@ public class CommonService {
         Path path = Paths.get(jenkins_secret_file_path);
         Charset cs = StandardCharsets.UTF_8;
         List<String> list = Files.readAllLines(path,cs);
-        File secret = new File(jenkins_secret_file_path);
+        File secret = new File(FilenameUtils.getName(jenkins_secret_file_path));
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(secret));
         int i = 0;
         for(String readLine : list){
@@ -109,7 +110,7 @@ public class CommonService {
             i++;
         }
         bufferedWriter.close();
-        secret = new File(jenkins_secret_file_path);
+        secret = new File(FilenameUtils.getName(jenkins_secret_file_path));
         V1Secret v1Secret =  mapper.readValue(secret, V1Secret.class);
         return Object_To_Json(v1Secret);
     }
@@ -135,25 +136,25 @@ public class CommonService {
     }
 
     public String secret_data_value(String docker_repo_uri, String username, String password) throws IOException {
-        LOGGER.info("docker_repo_uri::::::" + docker_repo_uri + "   username:::::" + username + "    password::::::" + password);
+        LOGGER.info("docker_repo_uri::::::" + CommonUtils.loggerReplace(docker_repo_uri) + "   username:::::" + CommonUtils.loggerReplace(username) + "    password::::::" + CommonUtils.loggerReplace(password));
         String auth = Base64Utils.encodeToString((username + ":" + password).getBytes(StandardCharsets.UTF_8));
-        LOGGER.info("AUTH ::::: " + auth);
+        LOGGER.info("AUTH ::::: " + CommonUtils.loggerReplace(auth));
         Map auth_property = new HashMap<String,String>();
         auth_property.put("username", username);
         auth_property.put("password", password);
         auth_property.put("auth", auth);
-        LOGGER.info("auth_property ::::: " + auth_property);
+        LOGGER.info("auth_property ::::: " + CommonUtils.loggerReplace(auth_property));
         Map auth_value = new HashMap<String,Map<?,?>>();
         auth_value.put(docker_repo_uri, auth_property);
-        LOGGER.info("auth_value ::::: " + auth_value);
+        LOGGER.info("auth_value ::::: " + CommonUtils.loggerReplace(auth_value));
         Map auth_result = new HashMap<String,Map<?,?>>();
         auth_result.put("auths", auth_value);
-        LOGGER.info("auth_result ::::: " + auth_result);
+        LOGGER.info("auth_result ::::: " + CommonUtils.loggerReplace(auth_result));
         JSONObject jsonObject = new JSONObject(auth_result);
-        LOGGER.info(jsonObject.toString());
-        LOGGER.info(Base64Utils.encodeToString(jsonObject.toString().getBytes(StandardCharsets.UTF_8)).getBytes().toString());;
+        LOGGER.info(CommonUtils.loggerReplace(jsonObject.toString()));
+        LOGGER.info(CommonUtils.loggerReplace(Base64Utils.encodeToString(jsonObject.toString().getBytes(StandardCharsets.UTF_8)).getBytes().toString()));
         String auth_base64 = Base64Utils.encodeToString(jsonObject.toString().getBytes(StandardCharsets.UTF_8));
-        LOGGER.info(auth_base64);
+        LOGGER.info(CommonUtils.loggerReplace(auth_base64));
         return auth_base64;
     }
 

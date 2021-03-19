@@ -1,6 +1,7 @@
 package org.openpaas.paasta.container.platform.jenkins.service.impl;
 
 import org.openpaas.paasta.container.platform.jenkins.common.CommonService;
+import org.openpaas.paasta.container.platform.jenkins.common.CommonUtils;
 import org.openpaas.paasta.container.platform.jenkins.exception.ContainerPlatformJenkinsServiceException;
 import org.openpaas.paasta.container.platform.jenkins.model.JpaJenkinsInstance;
 import org.openpaas.paasta.container.platform.jenkins.model.JpaServiceInstance;
@@ -89,7 +90,7 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
 
     @Override
     public JpaServiceInstance createServiceInstance(CreateServiceInstanceRequest request) throws ContainerPlatformJenkinsServiceException {
-        logger.info("Service_Name : " + request.getServiceDefinition().getName());
+        logger.info("Service_Name : " + CommonUtils.loggerReplace(request.getServiceDefinition().getName()));
         try {
             if (jpaJenkinsInstanceRepository.existsByOrganizationGuid(request.getOrganizationGuid())) {
                 throw new ContainerPlatformJenkinsServiceException("Currently, only 1 service instances can be created in this organization.");
@@ -200,7 +201,7 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
 
         CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
         String result = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-        logger.info("POST " + url + " --- \n" + result);
+        logger.info("POST " + CommonUtils.loggerReplace(url) + " --- \n" + CommonUtils.loggerReplace(result));
 
         httpClient.close();
 
@@ -221,7 +222,7 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
 
         CloseableHttpResponse httpResponse = httpClient.execute(httpGet);
         String result = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-        logger.info("GET " + url + " --- \n" + result);
+        logger.info("GET " + CommonUtils.loggerReplace(url) + " --- \n" + CommonUtils.loggerReplace(result));
 
         httpClient.close();
 
@@ -242,7 +243,7 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
 
         CloseableHttpResponse httpResponse = httpClient.execute(httpDelete);
         String result = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
-        logger.info("DELETE " + url + " --- \n" + result);
+        logger.info("DELETE " + CommonUtils.loggerReplace(url) + " --- \n" + CommonUtils.loggerReplace(result));
 
         httpClient.close();
 

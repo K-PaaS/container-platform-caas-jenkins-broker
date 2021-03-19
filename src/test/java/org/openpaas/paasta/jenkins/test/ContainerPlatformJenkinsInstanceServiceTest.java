@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.mockito.*;
 import org.openpaas.paasta.container.platform.jenkins.common.CommonService;
+import org.openpaas.paasta.container.platform.jenkins.common.CommonUtils;
 import org.openpaas.paasta.container.platform.jenkins.config.GsonConfig;
 import org.openpaas.paasta.container.platform.jenkins.exception.ContainerPlatformJenkinsServiceException;
 import org.openpaas.paasta.container.platform.jenkins.model.JpaJenkinsInstance;
@@ -86,8 +87,9 @@ public class ContainerPlatformJenkinsInstanceServiceTest {
         print();
     }
 
+
     private void print() {
-        logger.info(containerPlatformJenkinsInstanceService.namespace);
+        logger.info(containerPlatformJenkinsInstanceService.namespace.replaceAll("[\r\n]",""));
     }
 
     @Test
@@ -100,7 +102,7 @@ public class ContainerPlatformJenkinsInstanceServiceTest {
     @Test
     public void createServiceInstanceTest() throws Exception {
         CreateServiceInstanceRequest request = JpaServiceInstanceModel.getCreateServiceInstanceRequest();
-        logger.info(request.getServiceDefinition().getName());
+        logger.info(request.getServiceDefinition().getName().replaceAll("[\r\n]",""));
         JpaServiceInstance serviceInstance = ServiceInstanceModel.getJpaServiceInstance();
         JpaJenkinsInstance jpaJenkinsInstance = new JpaJenkinsInstance();
         KubeServiceV1  v1 = DeploymentInstanceModel.getKubeServiceV1();
