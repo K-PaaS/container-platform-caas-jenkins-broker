@@ -71,7 +71,7 @@ public class CommonService {
     @Autowired
     public CommonService(Gson gson) {this.gson = gson;}
 
-    public String deployment(String org_guid) throws IOException, NullPointerException {
+    public String deployment(String org_guid) throws IOException {
         File deployment = new File(FilenameUtils.getName(jenkins_deployment_file_path));
         AppsV1beta1Deployment v1beta1Deployment = mapper.readValue(deployment, AppsV1beta1Deployment.class);
 
