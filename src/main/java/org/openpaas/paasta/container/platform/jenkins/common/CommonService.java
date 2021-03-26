@@ -1,6 +1,5 @@
 package org.openpaas.paasta.container.platform.jenkins.common;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.gson.Gson;
@@ -8,6 +7,7 @@ import io.kubernetes.client.models.AppsV1beta1Deployment;
 import io.kubernetes.client.models.V1Namespace;
 import io.kubernetes.client.models.V1Secret;
 import io.kubernetes.client.models.V1Service;
+import org.apache.commons.io.FilenameUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Base64Utils;
-import org.apache.commons.io.FilenameUtils;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +35,6 @@ public class CommonService {
     private final Gson gson;
     private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
 
-
     @Value("${jenkins.deployment_file_path}")
     public String jenkins_deployment_file_path;
 
@@ -48,7 +46,6 @@ public class CommonService {
 
     @Value("${jenkins.secret_file_path}")
     public String jenkins_secret_file_path;
-
 
     @Value("${private.docker.registry.uri}")
     public String private_docker_registry_uri;
@@ -72,7 +69,7 @@ public class CommonService {
     public CommonService(Gson gson) {this.gson = gson;}
 
     public String deployment(String org_guid) throws IOException {
-        File deployment = new File(FilenameUtils.getName(jenkins_deployment_file_path));
+        File deployment = new File("/tmp/" + FilenameUtils.getName(jenkins_deployment_file_path));
         AppsV1beta1Deployment v1beta1Deployment = mapper.readValue(deployment, AppsV1beta1Deployment.class);
 
         v1beta1Deployment.getSpec().getTemplate().getSpec().getContainers().get(0).setImage(generatePrivateRegistryImage());
@@ -81,14 +78,14 @@ public class CommonService {
     }
 
     public String service(String org_guid) throws IOException {
-        File service = new File(FilenameUtils.getName(jenkins_service_file_path));
+        File service = new File("/tmp/" + FilenameUtils.getName(jenkins_service_file_path));
         V1Service v1Service = mapper.readValue(service, V1Service.class);
         v1Service = service_name_change(v1Service, org_guid);
         return Object_To_Json(v1Service);
     }
 
     public String namespace() throws IOException {
-        File service = new File(FilenameUtils.getName(jenkins_namespace_file_path));
+        File service = new File("/tmp/" + FilenameUtils.getName(jenkins_namespace_file_path));
         V1Namespace v1Namespace =  mapper.readValue(service, V1Namespace.class);
         return Object_To_Json(v1Namespace);
     }
@@ -97,7 +94,7 @@ public class CommonService {
         Path path = Paths.get(jenkins_secret_file_path);
         Charset cs = StandardCharsets.UTF_8;
         List<String> list = Files.readAllLines(path,cs);
-        File secret = new File(FilenameUtils.getName(jenkins_secret_file_path));
+        File secret = new File("/tmp/" + FilenameUtils.getName(jenkins_secret_file_path));
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(secret));
         int i = 0;
         for(String readLine : list){
@@ -110,7 +107,7 @@ public class CommonService {
             i++;
         }
         bufferedWriter.close();
-        secret = new File(FilenameUtils.getName(jenkins_secret_file_path));
+        secret = new File("/tmp/" + FilenameUtils.getName(jenkins_secret_file_path));
         V1Secret v1Secret =  mapper.readValue(secret, V1Secret.class);
         return Object_To_Json(v1Secret);
     }
