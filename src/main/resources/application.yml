@@ -1,14 +1,14 @@
 server:
-  port: '8888'
+  port: <%= p('server.port')%>
 
 spring:
   application:
     name: paas-ta-container-platform-jenkins-broker
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mysql://13.209.79.89:13306/broker?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
-    username: cp-admin
-    password: PaaS-TA@2020
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://<%= link('caas-mariadb-link').instances[0].address %>:<%= link('caas-mariadb-link').p('port') %>/broker?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
+    username: "<%= p('datasource.username')%>"
+    password: "<%= p('datasource.password')%>"
     validationQuery: SELECT 1
   jpa:
     database: mysql
