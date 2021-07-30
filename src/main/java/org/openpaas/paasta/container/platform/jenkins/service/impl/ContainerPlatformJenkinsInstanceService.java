@@ -143,7 +143,7 @@ public class ContainerPlatformJenkinsInstanceService implements ServiceInstanceS
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            jpaJenkinsInstanceRepository.delete(request.getServiceInstanceId());
+            jpaJenkinsInstanceRepository.deleteById(request.getServiceInstanceId());
         }
         JpaServiceInstance jpaServiceInstance = new JpaServiceInstance();
         jpaServiceInstance.setOrganizationGuid(jpaServiceInstance.getOrganizationGuid());
