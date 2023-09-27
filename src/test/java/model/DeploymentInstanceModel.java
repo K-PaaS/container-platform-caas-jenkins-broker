@@ -2,7 +2,7 @@ package model;
 
 
 import io.kubernetes.client.models.*;
-import org.openpaas.paasta.container.platform.jenkins.model.k8s.*;
+import org.openpaas.container.platform.jenkins.model.k8s.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

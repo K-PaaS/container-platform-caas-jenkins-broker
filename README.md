@@ -1,6 +1,6 @@
-# paas-ta-container-platform-caas-jenkins-broker
+# container-platform-caas-jenkins-broker
 
-PaaS-TA 에서 제공하는 Jenkins 서비스 브로커로 클라우드 컨트롤러와 서비스 브로커간의 v2 서비스 API 를 제공합니다.
+K-PaaS 에서 제공하는 Jenkins 서비스 브로커로 클라우드 컨트롤러와 서비스 브로커간의 v2 서비스 API 를 제공합니다.
 
 - [시작하기](#시작하기)
   - [Jenkins 서비스 브로커 설치 방법](#Jenkins-서비스-브로커-설치-방법)

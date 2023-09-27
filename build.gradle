@@ -13,11 +13,11 @@ buildscript {
 apply plugin: 'eclipse'
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
+pply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 jar {
-    baseName = 'paas-ta-caas-jenkins-broker'
+    baseName = 'caas-jenkins-broker'
 }
 
 ext {
@@ -27,7 +27,7 @@ ext {
     jsonPathVersion = '0.9.1'
 }
 
-group = 'com.openpaas.paasta'
+group = 'com.openpaas'
 version = ''
 sourceCompatibility = '1.8'
 

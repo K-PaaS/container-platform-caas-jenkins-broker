@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: paas-ta-container-platform-jenkins-broker
+    name: container-platform-jenkins-broker
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://<%= link('caas-mariadb-link').instances[0].address %>:<%= link('caas-mariadb-link').p('port') %>/broker?autoReconnect=true&useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Seoul&useLegacyDatetimeCode=false
@@ -66,4 +66,4 @@ private:
       image: <%= p('private.docker.registry.image')%>
       version: <%= p('private.docker.registry.version')%>
       secret:
-        name: paasta
+        name: kpaas
